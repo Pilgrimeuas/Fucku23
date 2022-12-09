@@ -59,7 +59,11 @@ public class StartGameSerializer_v544 extends StartGameSerializer_v534 {
         buffer.writeBoolean(packet.isExperimentsPreviouslyToggled());
         buffer.writeBoolean(packet.isBonusChestEnabled());
         buffer.writeBoolean(packet.isStartingWithMap());
-        VarInts.writeInt(buffer, packet.getDefaultPlayerPermission().ordinal());
+        if (packet.getDefaultPlayerPermission() != null) {
+            VarInts.writeInt(buffer, packet.getDefaultPlayerPermission().ordinal());
+        } else {
+            VarInts.writeInt(buffer, -1);
+        }
         buffer.writeIntLE(packet.getServerChunkTickRange());
         buffer.writeBoolean(packet.isBehaviorPackLocked());
         buffer.writeBoolean(packet.isResourcePackLocked());
@@ -114,7 +118,10 @@ public class StartGameSerializer_v544 extends StartGameSerializer_v534 {
         packet.setExperimentsPreviouslyToggled(buffer.readBoolean());
         packet.setBonusChestEnabled(buffer.readBoolean());
         packet.setStartingWithMap(buffer.readBoolean());
-        packet.setDefaultPlayerPermission(PLAYER_PERMISSIONS[VarInts.readInt(buffer)]);
+        final int perm = VarInts.readInt(buffer);
+        if (perm >= 0) {
+            packet.setDefaultPlayerPermission(PLAYER_PERMISSIONS[perm]);
+        }
         packet.setServerChunkTickRange(buffer.readIntLE());
         packet.setBehaviorPackLocked(buffer.readBoolean());
         packet.setResourcePackLocked(buffer.readBoolean());

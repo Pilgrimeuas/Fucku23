@@ -117,40 +117,44 @@ public class BedrockPacketHelper_v431 extends BedrockPacketHelper_v428 {
 
         NbtMap compoundTag = null;
         long blockingTicks = 0;
-        String[] canPlace;
-        String[] canBreak;
+        String[] canPlace = new String[0];
+        String[] canBreak = new String[0];
 
         ByteBuf buf = buffer.readSlice(VarInts.readUnsignedInt(buffer));
-        try (LittleEndianByteBufInputStream stream = new LittleEndianByteBufInputStream(buf);
-             NBTInputStream nbtStream = new NBTInputStream(stream)) {
-            int nbtSize = stream.readShort();
+        // try (LittleEndianByteBufInputStream stream = new LittleEndianByteBufInputStream(buf);
+        //      NBTInputStream nbtStream = new NBTInputStream(stream)) {
+        //     int nbtSize = stream.readShort();
 
-            if (nbtSize > 0) {
-                compoundTag = (NbtMap) nbtStream.readTag();
-            } else if (nbtSize == -1) {
-                int tagCount = stream.readUnsignedByte();
-                if (tagCount != 1) throw new IllegalArgumentException("Expected 1 tag but got " + tagCount);
-                compoundTag = (NbtMap) nbtStream.readTag();
-            }
+        //     if (nbtSize > 0) {
+        //         compoundTag = (NbtMap) nbtStream.readTag();
+        //     } else if (nbtSize == -1) {
+        //         int tagCount = stream.readUnsignedByte();
+        //         if (tagCount != 1) throw new IllegalArgumentException("Expected 1 tag but got " + tagCount);
+        //         compoundTag = (NbtMap) nbtStream.readTag();
+        //     }
 
-            canPlace = new String[stream.readInt()];
-            for (int i = 0; i < canPlace.length; i++) {
-                canPlace[i] = stream.readUTF();
-            }
-            canBreak = new String[stream.readInt()];
-            for (int i = 0; i < canBreak.length; i++) {
-                canBreak[i] = stream.readUTF();
-            }
+        //     int amount = buf.readableBytes() < 4 ? 0 : stream.readInt();
+        //     canPlace = new String[amount];
+        //     for (int i = 0; i < canPlace.length; i++) {
+        //         canPlace[i] = stream.readUTF();
+        //     }
+        //     amount = buf.readableBytes() < 4 ? 0 : stream.readInt();
+        //     canBreak = new String[amount];
+        //     for (int i = 0; i < canBreak.length; i++) {
+        //         canBreak[i] = stream.readUTF();
+        //     }
 
-            if (this.isBlockingItem(id, session)) {
-                blockingTicks = stream.readLong();
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to read item user data", e);
-        }
+        //     if (this.isBlockingItem(id, session)) {
+        //         blockingTicks = stream.readLong();
+        //     }
+        // } catch (IOException e) {
+        //     throw new IllegalStateException("Unable to read item user data", e);
+        // }
 
+        byte[] bytes = new byte[0];
         if (buf.isReadable()) {
-            log.info("Item user data has {} readable bytes left\n{}", buf.readableBytes(), ByteBufUtil.prettyHexDump(buf.readerIndex(0)));
+            bytes = new byte[buf.readableBytes()];
+            buf.readBytes(bytes);
         }
 
         return ItemData.builder()
@@ -162,6 +166,7 @@ public class BedrockPacketHelper_v431 extends BedrockPacketHelper_v428 {
                 .canBreak(canBreak)
                 .blockingTicks(blockingTicks)
                 .blockRuntimeId(blockRuntimeId)
+                .extraData(bytes)
                 .build();
     }
 
@@ -185,40 +190,44 @@ public class BedrockPacketHelper_v431 extends BedrockPacketHelper_v428 {
 
         NbtMap compoundTag = null;
         long blockingTicks = 0;
-        String[] canPlace;
-        String[] canBreak;
+        String[] canPlace = new String[0];
+        String[] canBreak = new String[0];
 
         ByteBuf buf = buffer.readSlice(VarInts.readUnsignedInt(buffer));
-        try (LittleEndianByteBufInputStream stream = new LittleEndianByteBufInputStream(buf);
-             NBTInputStream nbtStream = new NBTInputStream(stream)) {
-            int nbtSize = stream.readShort();
+        // try (LittleEndianByteBufInputStream stream = new LittleEndianByteBufInputStream(buf);
+        //      NBTInputStream nbtStream = new NBTInputStream(stream)) {
+        //     int nbtSize = stream.readShort();
 
-            if (nbtSize > 0) {
-                compoundTag = (NbtMap) nbtStream.readTag();
-            } else if (nbtSize == -1) {
-                int tagCount = stream.readUnsignedByte();
-                if (tagCount != 1) throw new IllegalArgumentException("Expected 1 tag but got " + tagCount);
-                compoundTag = (NbtMap) nbtStream.readTag();
-            }
+        //     if (nbtSize > 0) {
+        //         compoundTag = (NbtMap) nbtStream.readTag();
+        //     } else if (nbtSize == -1) {
+        //         int tagCount = stream.readUnsignedByte();
+        //         if (tagCount != 1) throw new IllegalArgumentException("Expected 1 tag but got " + tagCount);
+        //         compoundTag = (NbtMap) nbtStream.readTag();
+        //     }
 
-            canPlace = new String[stream.readInt()];
-            for (int i = 0; i < canPlace.length; i++) {
-                canPlace[i] = stream.readUTF();
-            }
-            canBreak = new String[stream.readInt()];
-            for (int i = 0; i < canBreak.length; i++) {
-                canBreak[i] = stream.readUTF();
-            }
+        //     int amount = buf.readableBytes() < 4 ? 0 : stream.readInt();
+        //     canPlace = new String[amount];
+        //     for (int i = 0; i < canPlace.length; i++) {
+        //         canPlace[i] = stream.readUTF();
+        //     }
+        //     amount = buf.readableBytes() < 4 ? 0 : stream.readInt();
+        //     canBreak = new String[amount];
+        //     for (int i = 0; i < canBreak.length; i++) {
+        //         canBreak[i] = stream.readUTF();
+        //     }
 
-            if (this.isBlockingItem(id, session)) {
-                blockingTicks = stream.readLong();
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to read item user data", e);
-        }
+        //     if (this.isBlockingItem(id, session)) {
+        //         blockingTicks = stream.readLong();
+        //     }
+        // } catch (IOException e) {
+        //     throw new IllegalStateException("Unable to read item user data", e);
+        // }
 
+        byte[] bytes = new byte[0];
         if (buf.isReadable()) {
-            log.info("Item user data has {} readable bytes left\n{}", buf.readableBytes(), ByteBufUtil.prettyHexDump(buf.readerIndex(0)));
+            bytes = new byte[buf.readableBytes()];
+            buf.readBytes(bytes);
         }
 
         return ItemData.builder()
@@ -232,6 +241,7 @@ public class BedrockPacketHelper_v431 extends BedrockPacketHelper_v428 {
                 .blockRuntimeId(blockRuntimeId)
                 .usingNetId(hasNetId)
                 .netId(netId)
+                .extraData(bytes)
                 .build();
     }
 
@@ -261,29 +271,30 @@ public class BedrockPacketHelper_v431 extends BedrockPacketHelper_v428 {
         ByteBuf userDataBuf = ByteBufAllocator.DEFAULT.ioBuffer();
         try (LittleEndianByteBufOutputStream stream = new LittleEndianByteBufOutputStream(userDataBuf);
              NBTOutputStream nbtStream = new NBTOutputStream(stream)) {
-            if (item.getTag() != null) {
-                stream.writeShort(-1);
-                stream.writeByte(1); // Hardcoded in current version
-                nbtStream.writeTag(item.getTag());
-            } else {
-                userDataBuf.writeShortLE(0);
-            }
+            // if (item.getTag() != null) {
+            //     stream.writeShort(-1);
+            //     stream.writeByte(1); // Hardcoded in current version
+            //     nbtStream.writeTag(item.getTag());
+            // } else {
+            //     userDataBuf.writeShortLE(0);
+            // }
 
-            String[] canPlace = item.getCanPlace();
-            stream.writeInt(canPlace.length);
-            for (String aCanPlace : canPlace) {
-                stream.writeUTF(aCanPlace);
-            }
+            // String[] canPlace = item.getCanPlace();
+            // stream.writeInt(canPlace.length);
+            // for (String aCanPlace : canPlace) {
+            //     stream.writeUTF(aCanPlace);
+            // }
 
-            String[] canBreak = item.getCanBreak();
-            stream.writeInt(canBreak.length);
-            for (String aCanBreak : canBreak) {
-                stream.writeUTF(aCanBreak);
-            }
+            // String[] canBreak = item.getCanBreak();
+            // stream.writeInt(canBreak.length);
+            // for (String aCanBreak : canBreak) {
+            //     stream.writeUTF(aCanBreak);
+            // }
 
-            if (this.isBlockingItem(id, session)) {
-                stream.writeLong(item.getBlockingTicks());
-            }
+            // if (this.isBlockingItem(id, session)) {
+            //     stream.writeLong(item.getBlockingTicks());
+            // }
+            userDataBuf.writeBytes(item.getExtraData());
 
             VarInts.writeUnsignedInt(buffer, userDataBuf.readableBytes());
             buffer.writeBytes(userDataBuf);
@@ -321,29 +332,30 @@ public class BedrockPacketHelper_v431 extends BedrockPacketHelper_v428 {
         ByteBuf userDataBuf = ByteBufAllocator.DEFAULT.ioBuffer();
         try (LittleEndianByteBufOutputStream stream = new LittleEndianByteBufOutputStream(userDataBuf);
              NBTOutputStream nbtStream = new NBTOutputStream(stream)) {
-            if (item.getTag() != null) {
-                stream.writeShort(-1);
-                stream.writeByte(1); // Hardcoded in current version
-                nbtStream.writeTag(item.getTag());
-            } else {
-                userDataBuf.writeShortLE(0);
-            }
+            // if (item.getTag() != null) {
+            //     stream.writeShort(-1);
+            //     stream.writeByte(1); // Hardcoded in current version
+            //     nbtStream.writeTag(item.getTag());
+            // } else {
+            //     userDataBuf.writeShortLE(0);
+            // }
 
-            String[] canPlace = item.getCanPlace();
-            stream.writeInt(canPlace.length);
-            for (String aCanPlace : canPlace) {
-                stream.writeUTF(aCanPlace);
-            }
+            // String[] canPlace = item.getCanPlace();
+            // stream.writeInt(canPlace.length);
+            // for (String aCanPlace : canPlace) {
+            //     stream.writeUTF(aCanPlace);
+            // }
 
-            String[] canBreak = item.getCanBreak();
-            stream.writeInt(canBreak.length);
-            for (String aCanBreak : canBreak) {
-                stream.writeUTF(aCanBreak);
-            }
+            // String[] canBreak = item.getCanBreak();
+            // stream.writeInt(canBreak.length);
+            // for (String aCanBreak : canBreak) {
+            //     stream.writeUTF(aCanBreak);
+            // }
 
-            if (this.isBlockingItem(id, session)) {
-                stream.writeLong(item.getBlockingTicks());
-            }
+            // if (this.isBlockingItem(id, session)) {
+            //     stream.writeLong(item.getBlockingTicks());
+            // }
+            userDataBuf.writeBytes(item.getExtraData());
 
             VarInts.writeUnsignedInt(buffer, userDataBuf.readableBytes());
             buffer.writeBytes(userDataBuf);

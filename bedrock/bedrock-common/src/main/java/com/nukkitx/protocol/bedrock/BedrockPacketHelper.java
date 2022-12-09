@@ -165,7 +165,6 @@ public abstract class BedrockPacketHelper {
     public final CommandParam getCommandParam(int index) {
         CommandParam commandParam = this.commandParams.get(index);
         if (commandParam == null) {
-            log.debug("Requested undefined CommandParam {}", index);
             return new CommandParam(index);
         }
         return commandParam;
@@ -734,7 +733,8 @@ public abstract class BedrockPacketHelper {
     }
 
     public <T> void writeOptional(ByteBuf buffer, Predicate<T> isPresent, T object, BiConsumer<ByteBuf, T> consumer) {
-        Preconditions.checkNotNull(object, "object");
+        // breaks Object::nonNull
+        //Preconditions.checkNotNull(object, "object");
         Preconditions.checkNotNull(consumer, "read consumer");
 
         boolean exists = isPresent.test(object);

@@ -26,11 +26,16 @@ public final class ItemData {
     private final String[] canBreak;
     private final long blockingTicks;
     private final int blockRuntimeId;
+    private final byte[] extraData;
     @NonFinal
     private boolean usingNetId;
     private int netId;
 
     private ItemData(int id, int damage, int count, NbtMap tag, String[] canPlace, String[] canBreak, long blockingTicks, int blockRuntimeId, boolean hasNetId, int netId) {
+        this(id, damage, count, tag, canPlace, canBreak, blockingTicks, blockRuntimeId, new byte[0], hasNetId, netId);
+    }
+
+    private ItemData(int id, int damage, int count, NbtMap tag, String[] canPlace, String[] canBreak, long blockingTicks, int blockRuntimeId, byte[] extraData, boolean hasNetId, int netId) {
         Preconditions.checkArgument(count < 256, "count exceeds maximum of 255");
         this.id = id;
         this.damage = damage;
@@ -42,6 +47,7 @@ public final class ItemData {
         this.blockRuntimeId = blockRuntimeId;
         this.netId = netId;
         this.usingNetId = hasNetId;
+        this.extraData = extraData;
     }
 
     public boolean isValid() {
