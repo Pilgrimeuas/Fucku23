@@ -3,16 +3,13 @@ package com.nukkitx.protocol.bedrock.packet;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import lombok.Data;
 
-import java.util.Arrays;
+import java.util.*;
 
 @Data
 public class ClientCacheMissResponsePacket extends BedrockPacket {
-    private final Long2ObjectMap<byte[]> blobs = new Long2ObjectOpenHashMap<>();
+    private final Map<Long, byte[]> blobs = new HashMap<>();
 
     @Override
     public boolean handle(BedrockPacketHandler handler) {
@@ -28,14 +25,14 @@ public class ClientCacheMissResponsePacket extends BedrockPacket {
         if (!(o instanceof ClientCacheMissResponsePacket)) return false;
         final ClientCacheMissResponsePacket other = (ClientCacheMissResponsePacket) o;
 
-        ObjectIterator<Long2ObjectMap.Entry<byte[]>> thisIterator = this.blobs.long2ObjectEntrySet().iterator();
+        Iterator<Map.Entry<Long, byte[]>> thisIterator = this.blobs.entrySet().iterator();
 
-        for (Long2ObjectMap.Entry<byte[]> thatEntry : other.blobs.long2ObjectEntrySet()) {
+        for (Map.Entry<Long, byte[]> thatEntry : other.blobs.entrySet()) {
             if (!thisIterator.hasNext()) {
                 return false;
             }
-            Long2ObjectMap.Entry<byte[]> thisEntry = thisIterator.next();
-            if (thisEntry.getLongKey() != thatEntry.getLongKey() ||
+            Map.Entry<Long, byte[]> thisEntry = thisIterator.next();
+            if (!Objects.equals(thisEntry.getKey(), thatEntry.getKey()) ||
                     !Arrays.equals(thisEntry.getValue(), thatEntry.getValue())) {
                 return false;
             }
@@ -46,8 +43,8 @@ public class ClientCacheMissResponsePacket extends BedrockPacket {
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        for (Long2ObjectMap.Entry<byte[]> entry : this.blobs.long2ObjectEntrySet()) {
-            result = result * PRIME + Long.hashCode(entry.getLongKey());
+        for (Map.Entry<Long, byte[]> entry : this.blobs.entrySet()) {
+            result = result * PRIME + Long.hashCode(entry.getKey());
             result = result * PRIME + Arrays.hashCode(entry.getValue());
         }
         return result;

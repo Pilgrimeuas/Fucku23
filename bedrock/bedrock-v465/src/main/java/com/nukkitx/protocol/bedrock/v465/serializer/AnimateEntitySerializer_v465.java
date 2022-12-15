@@ -5,9 +5,9 @@ import com.nukkitx.protocol.bedrock.BedrockPacketHelper;
 import com.nukkitx.protocol.bedrock.packet.AnimateEntityPacket;
 import com.nukkitx.protocol.bedrock.v419.serializer.AnimateEntitySerializer_v419;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AnimateEntitySerializer_v465 extends AnimateEntitySerializer_v419 {
@@ -23,7 +23,7 @@ public class AnimateEntitySerializer_v465 extends AnimateEntitySerializer_v419 {
         helper.writeString(buffer, packet.getController());
         buffer.writeFloatLE(packet.getBlendOutTime());
 
-        LongList runtimeIds = packet.getRuntimeEntityIds();
+        ArrayList<Long> runtimeIds = packet.getRuntimeEntityIds();
 
         // Don't use helper because it will box the primitive value.
         VarInts.writeUnsignedInt(buffer, runtimeIds.size());
@@ -41,7 +41,7 @@ public class AnimateEntitySerializer_v465 extends AnimateEntitySerializer_v419 {
         packet.setController(helper.readString(buffer));
         packet.setBlendOutTime(buffer.readFloatLE());
 
-        LongList runtimeIds = packet.getRuntimeEntityIds();
+        ArrayList<Long> runtimeIds = packet.getRuntimeEntityIds();
 
         // Don't use helper because it will box the primitive value.
         int count = VarInts.readUnsignedInt(buffer);

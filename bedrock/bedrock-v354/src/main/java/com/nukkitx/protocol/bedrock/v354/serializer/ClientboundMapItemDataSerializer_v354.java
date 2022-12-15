@@ -7,11 +7,11 @@ import com.nukkitx.protocol.bedrock.data.MapDecoration;
 import com.nukkitx.protocol.bedrock.data.MapTrackedObject;
 import com.nukkitx.protocol.bedrock.packet.ClientboundMapItemDataPacket;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClientboundMapItemDataSerializer_v354 implements BedrockPacketSerializer<ClientboundMapItemDataPacket> {
@@ -31,7 +31,7 @@ public class ClientboundMapItemDataSerializer_v354 implements BedrockPacketSeria
         if (!decorations.isEmpty() && !trackedObjects.isEmpty()) {
             type |= 0x4;
         }
-        LongList trackedEntityIds = packet.getTrackedEntityIds();
+        ArrayList<Long> trackedEntityIds = packet.getTrackedEntityIds();
         if (!trackedEntityIds.isEmpty()) {
             type |= 0x8;
         }
@@ -98,7 +98,7 @@ public class ClientboundMapItemDataSerializer_v354 implements BedrockPacketSeria
         packet.setLocked(buffer.readBoolean());
 
         if ((type & 0x8) != 0) {
-            LongList trackedEntityIds = packet.getTrackedEntityIds();
+            ArrayList<Long> trackedEntityIds = packet.getTrackedEntityIds();
             int length = VarInts.readUnsignedInt(buffer);
             for (int i = 0; i < length; i++) {
                 trackedEntityIds.add(VarInts.readLong(buffer));

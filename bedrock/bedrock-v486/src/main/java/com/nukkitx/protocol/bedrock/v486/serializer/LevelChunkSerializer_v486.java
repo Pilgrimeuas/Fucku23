@@ -5,9 +5,9 @@ import com.nukkitx.protocol.bedrock.BedrockPacketHelper;
 import com.nukkitx.protocol.bedrock.packet.LevelChunkPacket;
 import com.nukkitx.protocol.bedrock.v361.serializer.LevelChunkSerializer_v361;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import java.util.ArrayList;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LevelChunkSerializer_v486 extends LevelChunkSerializer_v361 {
@@ -29,7 +29,7 @@ public class LevelChunkSerializer_v486 extends LevelChunkSerializer_v361 {
 
         buffer.writeBoolean(packet.isCachingEnabled());
         if (packet.isCachingEnabled()) {
-            LongList blobIds = packet.getBlobIds();
+            ArrayList<Long> blobIds = packet.getBlobIds();
             VarInts.writeUnsignedInt(buffer, blobIds.size());
 
             for (long blobId : blobIds) {
@@ -60,7 +60,7 @@ public class LevelChunkSerializer_v486 extends LevelChunkSerializer_v361 {
         packet.setCachingEnabled(buffer.readBoolean());
 
         if (packet.isCachingEnabled()) {
-            LongList blobIds = packet.getBlobIds();
+            ArrayList<Long> blobIds = packet.getBlobIds();
             int length = VarInts.readUnsignedInt(buffer);
 
             for (int i = 0; i < length; i++) {

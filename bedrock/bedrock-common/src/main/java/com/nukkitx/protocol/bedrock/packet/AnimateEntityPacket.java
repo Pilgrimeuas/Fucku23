@@ -3,10 +3,9 @@ package com.nukkitx.protocol.bedrock.packet;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import java.util.ArrayList;
 
 /**
  * Used to trigger an entity animation on the specified runtime IDs to the client that receives it.
@@ -71,7 +70,7 @@ public class AnimateEntityPacket extends BedrockPacket {
      * @param runtimeEntityIds runtime entity IDs list
      * @return runtime entity IDs list
      */
-    private final LongList runtimeEntityIds = new LongArrayList();
+    private final ArrayList<Long> runtimeEntityIds = new ArrayList<>();
 
     @Override
     public boolean handle(BedrockPacketHandler handler) {

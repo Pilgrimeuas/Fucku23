@@ -3,11 +3,11 @@ package com.nukkitx.protocol.bedrock.packet;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.ArrayList;
 
 @Data
 @ToString(doNotUseGetters = true, exclude = {"data"})
@@ -25,7 +25,7 @@ public class LevelChunkPacket extends BedrockPacket {
      * @since v485
      */
     private int subChunkLimit;
-    private final LongList blobIds = new LongArrayList();
+    private final ArrayList<Long> blobIds = new ArrayList<>();
     private byte[] data;
 
     @Override
