@@ -113,16 +113,6 @@
                 <version>2.22.1</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <links>
-                        <link>https://netty.io/4.1/api</link>
-                        <link>https://ci.nukkitx.com/job/NukkitX/job/math/job/master/javadoc</link>
-                    </links>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.10</version>
