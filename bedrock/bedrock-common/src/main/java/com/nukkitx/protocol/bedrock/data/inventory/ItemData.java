@@ -19,23 +19,32 @@ public final class ItemData {
 
     @NonFinal
     private int id;
-    private final int damage;
-    private final int count;
-    private final NbtMap tag;
-    private final String[] canPlace;
-    private final String[] canBreak;
-    private final long blockingTicks;
-    private final int blockRuntimeId;
-    private final byte[] extraData;
+    @NonFinal
+    private int damage;
+    @NonFinal
+    private int count;
+    @NonFinal
+    private NbtMap tag;
+    @NonFinal
+    private String[] canPlace;
+    @NonFinal
+    private String[] canBreak;
+    @NonFinal
+    private long blockingTicks;
+    @NonFinal
+    private int blockRuntimeId;
+    @NonFinal
+    private byte[] extraData;
     @NonFinal
     private boolean usingNetId;
+    @NonFinal
     private int netId;
 
-    private ItemData(int id, int damage, int count, NbtMap tag, String[] canPlace, String[] canBreak, long blockingTicks, int blockRuntimeId, boolean hasNetId, int netId) {
+    public ItemData(int id, int damage, int count, NbtMap tag, String[] canPlace, String[] canBreak, long blockingTicks, int blockRuntimeId, boolean hasNetId, int netId) {
         this(id, damage, count, tag, canPlace, canBreak, blockingTicks, blockRuntimeId, new byte[0], hasNetId, netId);
     }
 
-    private ItemData(int id, int damage, int count, NbtMap tag, String[] canPlace, String[] canBreak, long blockingTicks, int blockRuntimeId, byte[] extraData, boolean hasNetId, int netId) {
+    public ItemData(int id, int damage, int count, NbtMap tag, String[] canPlace, String[] canBreak, long blockingTicks, int blockRuntimeId, byte[] extraData, boolean hasNetId, int netId) {
         Preconditions.checkArgument(count < 256, "count exceeds maximum of 255");
         this.id = id;
         this.damage = damage;
