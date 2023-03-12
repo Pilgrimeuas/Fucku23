@@ -53,10 +53,17 @@ public final class BedrockCodec {
             serializer = (BedrockPacketSerializer) definition.getSerializer();
         }
 
+        int readIndex = buf.readerIndex();
         try {
             serializer.deserialize(buf, helper, packet);
         } catch (Exception e) {
-            throw new PacketSerializeException("Error whilst deserializing " + packet, e);
+            // throw new PacketSerializeException("Error whilst deserializing " + packet, e);
+            log.error("Error whilst deserializing " + packet, e);
+            buf.readerIndex(readIndex);
+            UnknownPacket unknownPacket = new UnknownPacket();
+            unknownPacket.setPacketId(id);
+            unknownPacket.deserialize(buf, helper, unknownPacket);
+            packet = unknownPacket;
         }
 
         if (log.isDebugEnabled() && buf.isReadable()) {
