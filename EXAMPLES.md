@@ -6,7 +6,7 @@
 new Bootstrap()
         .channelFactory(RakChannelFactory.client(NioDatagramChannel.class))
         .group(new NioEventLoopGroup())
-        .childHandler(new BedrockClientInitializer() {
+        .handler(new BedrockClientInitializer() {
             @Override
             protected void initSession(BedrockClientSession session) {
                 // Connection established

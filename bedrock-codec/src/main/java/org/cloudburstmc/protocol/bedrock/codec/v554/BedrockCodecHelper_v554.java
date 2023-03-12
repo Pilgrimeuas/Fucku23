@@ -3,7 +3,8 @@ package org.cloudburstmc.protocol.bedrock.codec.v554;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.cloudburstmc.protocol.bedrock.codec.EntityDataTypeMap;
-import org.cloudburstmc.protocol.bedrock.codec.v503.BedrockCodecHelper_v503;
+import org.cloudburstmc.protocol.bedrock.codec.v534.BedrockCodecHelper_v534;
+import org.cloudburstmc.protocol.bedrock.data.Ability;
 import org.cloudburstmc.protocol.bedrock.data.defintions.ItemDefinition;
 import org.cloudburstmc.protocol.bedrock.data.inventory.ContainerSlotType;
 import org.cloudburstmc.protocol.bedrock.data.inventory.descriptor.*;
@@ -16,14 +17,14 @@ import org.cloudburstmc.protocol.common.util.VarInts;
 
 import java.util.List;
 
-public class BedrockCodecHelper_v554 extends BedrockCodecHelper_v503 {
+public class BedrockCodecHelper_v554 extends BedrockCodecHelper_v534 {
 
     private static final TextProcessingEventOrigin[] ORIGINS = TextProcessingEventOrigin.values();
     protected static final ItemDescriptorType[] DESCRIPTOR_TYPES = ItemDescriptorType.values();
 
     public BedrockCodecHelper_v554(EntityDataTypeMap entityData, TypeMap<Class<?>> gameRulesTypes,
-                                   TypeMap<ItemStackRequestActionType> stackRequestActionTypes, TypeMap<ContainerSlotType> containerSlotTypes) {
-        super(entityData, gameRulesTypes, stackRequestActionTypes, containerSlotTypes);
+                                   TypeMap<ItemStackRequestActionType> stackRequestActionTypes, TypeMap<ContainerSlotType> containerSlotTypes, TypeMap<Ability> abilities) {
+        super(entityData, gameRulesTypes, stackRequestActionTypes, containerSlotTypes, abilities);
     }
 
     @Override
@@ -53,7 +54,11 @@ public class BedrockCodecHelper_v554 extends BedrockCodecHelper_v503 {
     @Override
     public ItemDescriptorWithCount readIngredient(ByteBuf buffer) {
         ItemDescriptorType type = DESCRIPTOR_TYPES[buffer.readUnsignedByte()];
+        ItemDescriptor descriptor = this.readItemDescriptor(buffer, type);
+        return new ItemDescriptorWithCount(descriptor, VarInts.readInt(buffer));
+    }
 
+    protected ItemDescriptor readItemDescriptor(ByteBuf buffer, ItemDescriptorType type) {
         ItemDescriptor descriptor;
         switch (type) {
             case DEFAULT:
@@ -75,18 +80,20 @@ public class BedrockCodecHelper_v554 extends BedrockCodecHelper_v503 {
                 descriptor = InvalidDescriptor.INSTANCE;
                 break;
         }
-
-        return new ItemDescriptorWithCount(descriptor, VarInts.readInt(buffer));
+        return descriptor;
     }
 
     @Override
     public void writeIngredient(ByteBuf buffer, ItemDescriptorWithCount ingredient) {
-        ItemDescriptorType type = ingredient.getDescriptor().getType();
-        buffer.writeByte(type.ordinal());
+        buffer.writeByte(ingredient.getDescriptor().getType().ordinal());
+        this.writeItemDescriptor(buffer, ingredient.getDescriptor());
+        VarInts.writeInt(buffer, ingredient.getCount());
+    }
 
-        switch (type) {
+    protected void writeItemDescriptor(ByteBuf buffer, ItemDescriptor descriptor) {
+        switch (descriptor.getType()) {
             case DEFAULT:
-                DefaultDescriptor defaultDescriptor = (DefaultDescriptor) ingredient.getDescriptor();
+                DefaultDescriptor defaultDescriptor = (DefaultDescriptor) descriptor;
                 boolean empty = defaultDescriptor.getItemId() == null || defaultDescriptor.getItemId().getRuntimeId() == 0;
                 buffer.writeShortLE(empty ? 0 : defaultDescriptor.getItemId().getRuntimeId());
                 if (!empty) {
@@ -94,20 +101,19 @@ public class BedrockCodecHelper_v554 extends BedrockCodecHelper_v503 {
                 }
                 break;
             case MOLANG:
-                MolangDescriptor molangDescriptor = (MolangDescriptor) ingredient.getDescriptor();
+                MolangDescriptor molangDescriptor = (MolangDescriptor) descriptor;
                 this.writeString(buffer, molangDescriptor.getTagExpression());
                 buffer.writeByte(molangDescriptor.getMolangVersion());
                 break;
             case ITEM_TAG:
-                ItemTagDescriptor tagDescriptor = (ItemTagDescriptor) ingredient.getDescriptor();
+                ItemTagDescriptor tagDescriptor = (ItemTagDescriptor) descriptor;
                 this.writeString(buffer, tagDescriptor.getItemTag());
                 break;
             case DEFERRED:
-                DeferredDescriptor deferredDescriptor = (DeferredDescriptor) ingredient.getDescriptor();
+                DeferredDescriptor deferredDescriptor = (DeferredDescriptor) descriptor;
                 this.writeString(buffer, deferredDescriptor.getFullName());
                 buffer.writeShortLE(deferredDescriptor.getAuxValue());
                 break;
         }
-        VarInts.writeInt(buffer, ingredient.getCount());
     }
 }
