@@ -20,7 +20,7 @@ subprojects {
         plugin(rootProject.libs.plugins.lombok.get().pluginId)
     }
 
-    group = "org.cloudburstmc.protocol"
+    group = "dev.sora.protohax.protocol"
 
     tasks {
         compileJava {
